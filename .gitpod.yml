@@ -1,0 +1,4 @@
+tasks:
+  - init: |
+      go get dlv-dap
+      go get ./...
