@@ -24,11 +24,13 @@ func dnsHandler(w dns.ResponseWriter, r *dns.Msg) {
 	domainName := r.Question[0].Name
 
 	domainNameWithoutDot := strings.TrimSuffix(domainName, ".")
-	for _, host := range blockerConfig.BlockList {
-		if strings.Contains(domainNameWithoutDot, host) {
-			writeNullMsg(&w, r)
-			log.Printf("Blocked %v", domainNameWithoutDot)
-			return
+	if blockerConfig.Enabled {
+		for _, host := range blockerConfig.BlockList {
+			if strings.Contains(domainNameWithoutDot, host) {
+				writeNullMsg(&w, r)
+				log.Printf("Blocked %v", domainNameWithoutDot)
+				return
+			}
 		}
 	}
 

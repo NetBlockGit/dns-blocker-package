@@ -1,5 +1,0 @@
-package dnsblockerpackage
-
-func StartDnsServer()  {
-	
-}
