@@ -7,3 +7,7 @@ func (bc *BlockerConfig) UpdateBlockList(blockList []string) {
 func (bc *BlockerConfig) AddHostToBlockList(blockHost string) {
 	bc.BlockList = append(bc.BlockList, blockHost)
 }
+
+func (bc *BlockerConfig) ToggleBlocker() {
+	bc.Enabled = !bc.Enabled
+}

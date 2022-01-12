@@ -12,31 +12,40 @@ func Test_DNSBlocker(t *testing.T) {
 	addr := "127.0.0.1:8000"
 	bc := BlockerConfig{
 		UpstreamDns: "1.1.1.1:53",
-		BlockList:   []string{"ommore.me"},
+		BlockList:   []string{},
 		Addr:        addr,
+		Enabled:     true,
 	}
 	go bc.StartDnsServer()
 	time.Sleep(2 * time.Second)
 
 	t.Run("Should block if it is present in blocklist", func(t *testing.T) {
-		msg := new(dns.Msg)
-		msg.SetQuestion("ommore.me.", dns.TypeA)
-		r, e := dns.Exchange(msg, addr)
-		if e != nil {
-			t.Fatal(e)
-		}
+		bc.AddHostToBlockList("ommore.me")
+		r := tryAQuery(t, "ommore.me", addr)
 		assert.Len(t, r.Answer, 0)
 	})
 
 	t.Run("Should respond with answer if it is not present in blocklist", func(t *testing.T) {
 		bc.UpdateBlockList([]string{})
-		msg := new(dns.Msg)
-		msg.SetQuestion("ommore.me.", dns.TypeA)
-		r, e := dns.Exchange(msg, addr)
-		if e != nil {
-			t.Fatal(e)
-		}
+		r := tryAQuery(t, "ommore.me", addr)
 		assert.Len(t, r.Answer, 2)
 	})
 
+	t.Run("Should not block if blocker is disabled", func(t *testing.T) {
+		bc.Enabled = false
+		bc.AddHostToBlockList("ommore.me")
+		r := tryAQuery(t, "ommore.me", addr)
+		assert.Len(t, r.Answer, 2)
+	})
+
+}
+
+func tryAQuery(t *testing.T, host string, addr string) *dns.Msg {
+	msg := new(dns.Msg)
+	msg.SetQuestion(host+".", dns.TypeA)
+	r, e := dns.Exchange(msg, addr)
+	if e != nil {
+		t.Fatal(e)
+	}
+	return r
 }
