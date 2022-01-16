@@ -38,6 +38,20 @@ func Test_DNSBlocker(t *testing.T) {
 		assert.Len(t, r.Answer, 2)
 	})
 
+	t.Run("should receive query if channel is set", func(t *testing.T) {
+		ch := make(chan QueryEvent)
+		bc.QueryChannel = ch
+		go func() {
+			for res := range ch {
+				assert.Equal(t, QueryEvent{hostname: "ommore.me", blocked: false}, res)
+				break
+			}
+		}()
+		r := tryAQuery(t, "ommore.me", addr)
+		assert.Len(t, r.Answer, 2)
+
+	})
+
 }
 
 func tryAQuery(t *testing.T, host string, addr string) *dns.Msg {

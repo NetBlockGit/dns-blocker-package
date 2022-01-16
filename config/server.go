@@ -28,12 +28,14 @@ func dnsHandler(w dns.ResponseWriter, r *dns.Msg) {
 		for _, host := range blockerConfig.BlockList {
 			if strings.Contains(domainNameWithoutDot, host) {
 				writeNullMsg(&w, r)
+				blockerConfig.sendQueryEvent(domainNameWithoutDot, true)
 				log.Printf("Blocked %v", domainNameWithoutDot)
 				return
 			}
 		}
 	}
 
+	blockerConfig.sendQueryEvent(domainNameWithoutDot, false)
 	log.Printf("Passed with domain name %v", domainNameWithoutDot)
 	upstreamDNSAddr := blockerConfig.UpstreamDns
 	dnsRes, err := dns.Exchange(r, upstreamDNSAddr)

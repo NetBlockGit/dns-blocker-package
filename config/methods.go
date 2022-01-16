@@ -11,3 +11,14 @@ func (bc *BlockerConfig) AddHostToBlockList(blockHost string) {
 func (bc *BlockerConfig) ToggleBlocker() {
 	bc.Enabled = !bc.Enabled
 }
+
+// Sends query event to channel if channel is not nil
+func (bc *BlockerConfig) sendQueryEvent(hostname string, blocked bool) {
+	if bc.QueryChannel != nil {
+		event := QueryEvent{
+			hostname: hostname,
+			blocked:  blocked,
+		}
+		bc.QueryChannel <- event
+	}
+}
