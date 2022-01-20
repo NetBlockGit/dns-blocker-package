@@ -9,6 +9,6 @@ type BlockerConfig struct {
 }
 
 type QueryEvent struct {
-	hostname string
-	blocked  bool
+	Hostname string
+	Blocked  bool
 }

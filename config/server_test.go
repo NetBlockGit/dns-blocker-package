@@ -43,7 +43,7 @@ func Test_DNSBlocker(t *testing.T) {
 		bc.QueryChannel = ch
 		go func() {
 			for res := range ch {
-				assert.Equal(t, QueryEvent{hostname: "ommore.me", blocked: false}, res)
+				assert.Equal(t, QueryEvent{Hostname: "ommore.me", Blocked: false}, res)
 				break
 			}
 		}()

@@ -16,8 +16,8 @@ func (bc *BlockerConfig) ToggleBlocker() {
 func (bc *BlockerConfig) sendQueryEvent(hostname string, blocked bool) {
 	if bc.QueryChannel != nil {
 		event := QueryEvent{
-			hostname: hostname,
-			blocked:  blocked,
+			Hostname: hostname,
+			Blocked:  blocked,
 		}
 		bc.QueryChannel <- event
 	}
