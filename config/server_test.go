@@ -16,7 +16,7 @@ func Test_DNSBlocker(t *testing.T) {
 		Addr:        addr,
 		Enabled:     true,
 	}
-	go bc.StartDnsServer()
+	bc.StartDnsServer()
 	time.Sleep(2 * time.Second)
 
 	t.Run("Should block if it is present in blocklist", func(t *testing.T) {
