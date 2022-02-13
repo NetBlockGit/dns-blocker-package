@@ -11,7 +11,7 @@ var blockerConfig *BlockerConfig
 
 func (bc *BlockerConfig) StartDnsServer() error {
 	blockerConfig = bc
-	server := &dns.Server{Addr: bc.Addr, Net: "udp"}
+	server := &dns.Server{Addr: bc.Addr, Net: "tcp"}
 	dns.HandleFunc(".", dnsHandler)
 	err := server.ListenAndServe()
 	if err != nil {
